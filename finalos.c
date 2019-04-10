@@ -1,5 +1,5 @@
 #include<stdio.h>
-void findwt(int Process[],int n,int burst_time[],int wait_time[])
+void findwt(int Process[],int n,int burst_time[],int wait_time[],int arrival_time[])
 {
 	wait_time[0]=0;
 	int i;
@@ -17,20 +17,21 @@ void findtat(int Process[],int n, int burst_time[],int wait_time[],int tat[])
 	}
 }
 
-void fcfs(int Process[],int n,int burst_time[])
+void fcfs(int Process[],int n,int burst_time[],int arrival_time[])
 {
 	int wait_time[n], total_wait_time=0; int tat[n], total_tat=0;
-	findwt(Process,n,burst_time,wait_time);
+	findwt(Process,n,burst_time,wait_time,arrival_time);
 	findtat(Process,n,burst_time,wait_time,tat);
 	int i;
 	printf("\n\n");
-	printf("-------------First come first serve---------------\n");
-	printf("Process\t Burst Time\t Waiting time\t TurnArroundTime\n");
+	printf("                First come first serve                 \n");
+	printf("Process\t Arrival Time\t Burst Time\t Waiting time\t TurnArroundTime\n");
 	for(i=0;i<n;i++)
 	{
 		total_wait_time=total_wait_time+wait_time[i];
 		total_tat=total_tat+tat[i];
 		printf("P%d",i+1);
+        printf("           %d\t",arrival_time[i]);
 		printf("          %d\t",burst_time[i]);
 		printf("               %d\t",wait_time[i]);
 		printf("        %d\t",tat[i]);
@@ -42,7 +43,7 @@ void fcfs(int Process[],int n,int burst_time[])
     printf("\nAverage Turn Around Time is : %d ",b);
 	
 }
-void sjf(int Process[],int burst_time[], int n)
+void sjf(int Process[],int burst_time[], int n,int arrival_time[])
 {
 	int wait_time[n],tat[n],i,j,temp,total=0,pos;
 	float avg_wait_time,avg_tat;
@@ -80,13 +81,13 @@ void sjf(int Process[],int burst_time[], int n)
     avg_wait_time=(float)total/n;      //average waiting time
     total=0;
     printf("\n\n");
-    printf("-------------------Shortest Job First-------------------------");
-    printf("\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time");
+    printf("                 Shortest Job First                  ");
+    printf("\nProcess\t    Arrival Time  \tBurst Time    \tWaiting Time  \tTurnaround Time");
     for(i=0;i<n;i++)
     {
         tat[i]=burst_time[i]+wait_time[i];     //calculate turnaround time
         total+=tat[i];
-        printf("\nP%d\t\t  %d\t\t    %d\t\t\t%d",Process[i],burst_time[i],wait_time[i],tat[i]);
+        printf("\nP%d\t\t %d\t\t %d\t\t    %d\t\t\t%d",Process[i],arrival_time[i],burst_time[i],wait_time[i],tat[i]);
     }
  
     avg_tat=(float)total/n;     //average turnaround time
@@ -94,7 +95,7 @@ void sjf(int Process[],int burst_time[], int n)
     printf("\nAverage Turnaround Time=%f\n",avg_tat);
 	
 }
-void idle_condition(int Process[],int bt[],int n)
+void idle_condition(int Process[],int bt[],int n,int arrival_time[])
 {
 	int wait_time[n],tat[n],i,j,temp,total=0,pos;
 	float avg_wt,avg_tat;
@@ -132,13 +133,13 @@ void idle_condition(int Process[],int bt[],int n)
     avg_wt=(float)total/n;      //average waiting time
     total=0;
     printf("\n\n");
-    printf("-------------Cpu is in Idle Condition  for 1 unit-------------");
-    printf("\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time");
+    printf("             Cpu is in Idle Condition  for 1 unit             ");
+    printf("\nProcess\t   Arrival Time \t Burst Time    \tWaiting Time\tTurnaround Time");
     for(i=0;i<n;i++)
     {
         tat[i]=bt[i]+wait_time[i];     //calculate turnaround time
         total+=tat[i];
-        printf("\nP%d\t\t  %d\t\t    %d\t\t\t%d",Process[i],bt[i],wait_time[i],tat[i]);
+        printf("\nP%d\t\t %d\t\t %d\t\t    %d\t\t\t%d",Process[i],arrival_time[i],bt[i],wait_time[i],tat[i]);
     }
  
     avg_tat=(float)total/n;     //average turnaround time
@@ -148,17 +149,17 @@ void idle_condition(int Process[],int bt[],int n)
 
 int main()
 {
-   int Process[20],burst_time[20],n,i;
+   int Process[20],burst_time[20],arrival_time[20],n,i;
    printf("Enter the total number of Process to be executed: \n");
    scanf("%d",&n);
-   printf("\nEnter Burst Time:\n");
+   printf("\nEnter Burst Time and Arrival time:\n");
     for(i=0;i<n;i++)
     {
         printf("P%d:",i+1);
-        scanf("%d",&burst_time[i]);
+        scanf("%d  %d",&burst_time[i],&arrival_time[i]);
         Process[i]=i+1;         //contains process number
     }
-   fcfs(Process,n,burst_time);
-   sjf(Process,burst_time,n);
-   idle_condition(Process,burst_time,n);
+   fcfs(Process,n,burst_time,arrival_time);
+   sjf(Process,burst_time,n,arrival_time);
+   idle_condition(Process,burst_time,n,arrival_time);
 }
